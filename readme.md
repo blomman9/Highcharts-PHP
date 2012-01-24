@@ -1,14 +1,24 @@
+Highcharts PHP
+======================
 
-===What is Highcharts PHP===
-Highcharts PHP is a PHP library to interact with the Highcharts JS charting library. Thanks to Roberto Aloi for making the first highcharts-php library.
+What is Highcharts PHP
+----------------------
 
-===What is Highcharts===
+Highcharts PHP is a PHP library to interact with the Highcharts JS charting library. Thanks to Roberto Aloi for making the first [highcharts-php](https://bitbucket.org/roberto.aloi/highcharts-php/) library.
+
+What is Highcharts
+------------------
+
 Reading from the official documentation, "Highcharts is a charting library written in pure JavaScript, offering an easy way of adding interactive charts to your web site or web application".
 
-===Installation===
-The Highcharts JS libraries are available at: www.highcharts.com and they are free for non commercial use. For commercial usage, please refers to the license and pricing section of their website. Download the Highchart JS library along with jQuery.
+Installation
+------------
 
-===Example===
+The Highcharts JS libraries are available at: [www.highcharts.com](http://www.highcharts.com) and they are free for non commercial use. For commercial usage, please refers to the license and pricing section of their website. Download the Highchart JS library along with jQuery.
+
+Example
+-------
+
 Here is an example implementation:
 
         <!-- jQuery and Highchart JS -->
