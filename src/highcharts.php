@@ -39,6 +39,13 @@ class Highcharts extends HighchartsOutput
     private $_engine;
 
     /**
+    * Custom prefix for JavaScript engine
+    * 
+    * @var string
+    */
+    private $_custom_prefix;
+
+    /**
     * Title
     * 
     * @var HighchartsTitle
@@ -87,20 +94,24 @@ class Highcharts extends HighchartsOutput
     */
     public $series;
     
-    const HIGHCHARTS_ENGINE_JQUERY = 'jquery';
-    const HIGHCHARTS_ENGINE_MOOTOOLS = 'mootools';
+    const HIGHCHARTS_ENGINE_AJAX                 = 'ajax';
+    const HIGHCHARTS_ENGINE_JQUERY               = 'jquery';
+    const HIGHCHARTS_ENGINE_JQUERY_CUSTOM_PREFIX = 'jquery-custom';
+    const HIGHCHARTS_ENGINE_MOOTOOLS             = 'mootools';
 
     /**
     * Create new Highcharts object
     * 
     * @param HighchartsChart $chart
-    * @param string $engine
+    * @param string $engine Optional: JavaScript engine
+    * @param string $custom_prefix Optional: custom JavaScript engine prefix
     * @return Highcharts
     */
-    public function __construct(HighchartsChart $chart, $engine = self::HIGHCHARTS_ENGINE_JQUERY)
+    public function __construct(HighchartsChart $chart, $engine = self::HIGHCHARTS_ENGINE_JQUERY, $custom_prefix = null)
     {
         $this->_chart = $chart;
         $this->_engine = $engine;
+        $this->_custom_prefix = $custom_prefix;
 
         $this->title = new HighchartsTitle();
         $this->series = new HighchartsSeries();
@@ -133,12 +144,19 @@ class Highcharts extends HighchartsOutput
         $code = '<script type="text/javascript">';
         if ($engine == self::HIGHCHARTS_ENGINE_MOOTOOLS) {
             $code .= 'window.addEvent(\'domready\', function() {';
-        } else {
+        } elseif ($engine == self::HIGHCHARTS_ENGINE_JQUERY_CUSTOM_PREFIX && isset($this->_custom_prefix)) {
+            $code .= $this->_custom_prefix . '(document).ready(function() {';
+        } elseif ($engine !== self::HIGHCHARTS_ENGINE_AJAX) {
             $code .= '$(document).ready(function() {';
         }
-        $code .= 'var ' . $renderTo . ' = new Highcharts.Chart({';
+        $code .= 'var ' . $renderTo . ' = ';
+        $code .= 'new Highcharts.Chart({';
         $code .= $this->_build();
-        $code .= '});});</script>';
+        $code .= '})';
+        if ($engine !== self::HIGHCHARTS_ENGINE_AJAX) {
+            $code .= '});';
+        }
+        $code .= '</script>';
         return $code;
     }
 
@@ -205,6 +223,9 @@ class HighchartsOutput
     * 
     */
     protected function render() {
+        if (!$this->_code) {
+            return '_err: null';
+        }
         return $this->_code;
     }
 }
@@ -313,6 +334,10 @@ class HighchartsXAxis extends HighchartsAxis
 
 class HighchartsYAxis extends HighchartsAxis
 {
+    /**
+    * Render yAxis
+    * 
+    */
     protected function render() {
         $this->_code = 'yAxis' . ': ' . json_encode($this);
         return parent::render();
@@ -322,70 +347,70 @@ class HighchartsYAxis extends HighchartsAxis
 class HighchartsLegend extends HighchartsOutput
 {
     /**
-    * put your comment there...
+    * Alignment
     * 
     * @var string
     */
     public $align = self::HIGHCHARTS_LEGEND_ALIGN_CENTER;
     
     /**
-    * put your comment there...
+    * Legend x position
     * 
     * @var int
     */
     public $x = 0;
     
     /**
-    * put your comment there...
+    * Vertical alignment
     * 
     * @var string
     */
     public $verticalAlign = self::HIGHCHARTS_LEGEND_VERTICAL_ALIGN_BOTTOM;
     
     /**
-    * put your comment there...
+    * Legend y position
     * 
     * @var int
     */
     public $y = 0;
     
     /**
-    * put your comment there...
+    * Floating (y|n)
     * 
     * @var boolean
     */
     public $floating = false;
     
     /**
-    * put your comment there...
+    * Background color
     * 
     * @var string
     */
     public $backgroundColor;
     
     /**
-    * put your comment there...
+    * Border color
     * 
     * @var string
     */
     public $borderColor = "#CCC";
     
     /**
-    * put your comment there...
+    * Border width
     * 
     * @var int
     */
     public $borderWidth = 1;
     
     /**
-    * put your comment there...
+    * Shadow
     * 
     * @var boolean
     */
     public $shadow = false;
     
     /**
-    * put your comment there...
+    * Reversed
     * 
     * @var boolean
     */
@@ -398,6 +423,10 @@ class HighchartsLegend extends HighchartsOutput
     const HIGHCHARTS_LEGEND_VERTICAL_ALIGN_TOP = 'top';
     const HIGHCHARTS_LEGEND_VERTICAL_ALIGN_BOTTOM = 'bottom';
 
+    /**
+    * Render legend
+    * 
+    */
     protected function render() {
         $this->_code = 'legend' . ': ' . json_encode($this);
         return parent::render();
@@ -407,14 +436,20 @@ class HighchartsLegend extends HighchartsOutput
 class HighchartsTooltip extends HighchartsOutput
 {
     /**
-    * put your comment there...
+    * Tooltip formatter
     * 
-    * @var mixed
+    * @var string
     */
     public $formatter;
 
+    /**
+    * Render tooltip
+    * 
+    */
     protected function render() {
-        $this->_code = 'tooltip' . ': { formatter: ' . $this->formatter . '}';
+        if (isset($this->formatter)) {
+            $this->_code = 'tooltip' . ': { formatter: ' . $this->formatter . '}';
+        }
         return parent::render();
     }
 }
@@ -422,18 +457,27 @@ class HighchartsTooltip extends HighchartsOutput
 class HighchartsPlotOptions extends HighchartsOutput
 {
     /**
-    * put your comment there...
+    * Column
     * 
     * @var HighchartsPlotOptionsColumn
     */
     public $column;
     
+    /**
+    * Create new HighchartsPlotOptions
+    */
     public function __construct() {
         $this->column = new HighchartsPlotOptionsColumn();
     }
 
+    /**
+    * Render column
+    * 
+    */
     protected function render() {
-        $this->_code = 'plotOptions' . ': ' . json_encode($this);
+        if (isset($this->column)) {
+            $this->_code = 'plotOptions' . ': ' . json_encode($this);
+        }
         return parent::render();
     }
 }
@@ -441,14 +485,14 @@ class HighchartsPlotOptions extends HighchartsOutput
 class HighchartsPlotOptionsColumn
 {
     /**
-    * put your comment there...
+    * Stacking
     * 
-    * @var mixed
+    * @var string
     */
     public $stacking = self::HIGHCHARTS_PLOT_OPTIONS_COLUMN_STACKING_NONE;
 
     /**
-    * put your comment there...
+    * Data labels
     * 
     * @var HighchartsPlotOptionsColumnDataLabels
     */
@@ -456,7 +500,11 @@ class HighchartsPlotOptionsColumn
 
     const HIGHCHARTS_PLOT_OPTIONS_COLUMN_STACKING_NONE = null;
     const HIGHCHARTS_PLOT_OPTIONS_COLUMN_STACKING_NORMAL = 'normal';
-    
+
+    /**
+    * Create new HighchartsPlotOptionsColumn
+    * 
+    */
     public function __construct() {
         $this->dataLabels = new HighchartsPlotOptionsColumnDataLabels();
     }
@@ -465,7 +513,7 @@ class HighchartsPlotOptionsColumn
 class HighchartsPlotOptionsColumnDataLabels
 {
     /**
-    * put your comment there...
+    * Enabled
     * 
     * @var boolean
     */
@@ -475,51 +523,52 @@ class HighchartsPlotOptionsColumnDataLabels
 class HighchartsSeries extends HighchartsOutput
 {
     /**
-    * put your comment there...
+    * List of series
     * 
-    * @var mixed
+    * @var array
     */
     private $_arrSeries;
 
     /**
-    * put your comment there...
+    * Add new serie
     * 
-    * @param mixed $serie
+    * @param HighchartsSerie $serie
     */
-    public function addSerie($serie) {
+    public function addSerie(HighchartsSerie $serie) {
         $this->_arrSeries[] = $serie;
     }
 
     /**
-    * put your comment there...
+    * Render series
     * 
     */
     protected function render() {
         if ($this->_arrSeries) {
-            $this->_code = 'series' . ': ' . json_encode($this->_arrSeries);
-            return parent::render();
+            $this->_code = 'series' . ': ' . json_encode($this->_arrSeries);            
         }
+        return parent::render();
     }
 }
 
 class HighchartsSerie
 {
     /**
-    * put your comment there...
+    * Name of the serie,
+    * must be utf8_encoded variable
     * 
     * @var mixed
     */
     public $name;
 
     /**
-    * put your comment there...
+    * List of items
     * 
     * @var array
     */
     public $data;
 
     /**
-    * put your comment there...
+    * Create new HighchartsSerie
     * 
     * @param mixed $name
     * @param mixed $data
