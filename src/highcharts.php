@@ -233,7 +233,7 @@ class HighchartsOutput
 class HighchartsChart extends HighchartsOutput
 {
     /**
-    * Enter which container´s id (<div id="container"></div>) 
+    * Enter which containerÂ´s id (<div id="container"></div>) 
     * that highcharts should render to
     * 
     * @var string
@@ -304,7 +304,7 @@ class HighchartsAxis extends HighchartsOutput
     * 
     * @var HighchartsTitle
     */
-    public $title;
+    public $title = '';
     
     /**
     * Use setTitle to make sure explicit type is checked
