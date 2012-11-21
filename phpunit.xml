@@ -1,0 +1,28 @@
+<phpunit backupGlobals="true"
+         backupStaticAttributes="false"
+
+
+         cacheTokens="true"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         mapTestClassNameToCoveredClassName="false"
+         printerClass="PHPUnit_TextUI_ResultPrinter"
+
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader">
+
+ <testsuites>
+  <testsuite name="My Test Suite">
+    <directory>tests</directory>
+    <file>tests/highcharts.test.php</file>
+    <exclude>/path/to/exclude</exclude>
+  </testsuite>
+</testsuites>
+</phpunit>
