@@ -14,7 +14,7 @@ Reading from the official documentation, "Highcharts is a charting library writt
 Developed by Robert Blomdalen (https://github.com/blomman9)
 -----------------------------
 
-Just forked it, made it PSR-0 compliance and added composer
+Just forked it, made it PSR-0 compliance, added composer and added some more tests
 
 Installation
 ------------
