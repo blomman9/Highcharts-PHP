@@ -11,6 +11,11 @@ What is Highcharts
 
 Reading from the official documentation, "Highcharts is a charting library written in pure JavaScript, offering an easy way of adding interactive charts to your web site or web application".
 
+Developed by Robert Blomdalen (https://github.com/blomman9)
+-----------------------------
+
+Just forked it, made it PSR-0 compliance and added composer
+
 Installation
 ------------
 

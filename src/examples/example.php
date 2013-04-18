@@ -5,38 +5,37 @@
 
         <?php
 
-        // Include the library
-        require_once('../src/highcharts.php');
-
+		// Load composer autoloader
+        require_once('../../vendor/autoload.php');
 
         // Start by adding a new reference object
         // and adding some configuration for the chart
-        $oHighcharts = new Highcharts(new HighchartsChart('container', HighchartsChart::SERIES_TYPE_COLUMN));
+        $oHighcharts = new Highchart\Highchart(new Highchart\Chart('container', Highchart\Chart::SERIES_TYPE_COLUMN));
 
-        // Title typeof HighchartsTitle
-        $oHighcharts->title = new HighchartsTitle('Stacked bar chart');
+		// Title typeof HighchartsTitle
+		$oHighcharts->title = new Highchart\Title('Stacked bar chart');
 
         // Description of xAxis
         $oHighcharts->xAxis->categories = array('Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas');
 
         // Options for yAxis
         $oHighcharts->yAxis->min = 0;
-        $oHighcharts->yAxis->setTitle(new HighchartsTitle('Total fruit consumption'));
+        $oHighcharts->yAxis->setTitle(new Highchart\Title('Total fruit consumption'));
 
         $oHighcharts->legend->reversed = true;
 
         // The formatter is a javascript callback
-        $oHighcharts->tooltip->formatter = "function() {
+        $oHighcharts->tooltip->setFormatter("function() {
             return this.series.name +': '+ this.y +'';
-        }";
+        }");
 
         // If stacking, choose normal
-        $oHighcharts->plotOptions->column->stacking = HighchartsPlotOptionsColumn::HIGHCHARTS_PLOT_OPTIONS_COLUMN_STACKING_NORMAL;
+        $oHighcharts->plotOptions->column->stacking = Highchart\Plot\Options\Column::HIGHCHARTS_PLOT_OPTIONS_COLUMN_STACKING_NORMAL;
 
         // These are your data
-        $oHighcharts->series->addSerie(new HighchartsSerie('John', array(5, 3, 4, 7, 2)));
-        $oHighcharts->series->addSerie(new HighchartsSerie('Jane', array(2, 2, 3, 2, 1)));
-        $oHighcharts->series->addSerie(new HighchartsSerie('Joe', array(3, 4, 4, 2, 5)));
+        $oHighcharts->series->addSerie(new Highchart\Serie(array(5, 3, 4, 7, 2), 'John'));
+        $oHighcharts->series->addSerie(new Highchart\Serie(array(2, 2, 3, 2, 1), 'Jane'));
+        $oHighcharts->series->addSerie(new Highchart\Serie(array(3, 4, 4, 2, 5), 'Joe'));
 
 
         // Render chart
