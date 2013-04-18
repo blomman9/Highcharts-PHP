@@ -1,4 +1,4 @@
-Highcharts PHP ![Project Build Status](https://secure.travis-ci.org/lsv/Highcharts-PHP.png)
+Highcharts PHP ![Project Build Status](https://api.travis-ci.org/lsv/Highcharts-PHP.png)
 ======================
 
 What is Highcharts PHP
