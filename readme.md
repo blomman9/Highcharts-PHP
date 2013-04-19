@@ -1,4 +1,4 @@
-Highcharts PHP ![Project Build Status](https://api.travis-ci.org/lsv/Highcharts-PHP.png)
+Highcharts PHP ![Project Build Status](https://api.travis-ci.org/blomman9/Highcharts-PHP.png)
 ======================
 
 What is Highcharts PHP
@@ -11,10 +11,26 @@ What is Highcharts
 
 Reading from the official documentation, "Highcharts is a charting library written in pure JavaScript, offering an easy way of adding interactive charts to your web site or web application".
 
-Developed by Robert Blomdalen (https://github.com/blomman9)
------------------------------
+Developers
+----------
 
-Just forked it, made it PSR-0 compliance, added composer and added some more tests
+ * Robert Blomdalen [blomman9](https://github.com/blomman9)
+ * Martin Århof [lsv](https://github.com/lsv)
+
+History
+-------
+
+Version 1.1
+ * PSR-0 code compliance
+ * Adding composer for externals
+ * Some more tests
+
+Version 1.0.1
+ * Bug fixes
+
+Version 1.0
+ * Multipurpose class abstraction of Highcharts
+ * The very first test to ensure continuous integration based development
 
 Installation
 ------------
